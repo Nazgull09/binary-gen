@@ -16,5 +16,12 @@ opts= EvOptions{populationSize = 42,
 
 main::IO()
 main = do
-   (n, result) <- initEvol opts
+   cnum <- getLine
+   let cityNum = read cnum :: Int
+   let chrLength = ceiling $ logBase 2.0 $ fromIntegral cityNum
+   let cityOpts = EvOptions 42 (chrLength*cityNum) 100 fit 10 0.3 0.1
+       
+   (n, result) <- initEvol cityOpts
    print $ show n ++ "-" ++ show result
+
+   
