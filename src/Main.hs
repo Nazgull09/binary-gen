@@ -8,7 +8,7 @@ fit chr = sum $ map fromIntegral chr
 opts::EvOptions
 opts= EvOptions{populationSize = 42,
                 individLength = 10,
-                maxGeneration = 100,
+                maxGeneration = 10,
                 fitness = fit,
                 targetFitness = 10,
                 mutationChance = 0.3,
@@ -22,6 +22,8 @@ main = do
    let cityOpts = EvOptions 42 (chrLength*cityNum) 100 fit 10 0.3 0.1
        
    (n, result) <- initEvol cityOpts
+   cityMap <- readFile "citymap.txt"
+   print cityMap
    print $ show n ++ "-" ++ show result
-
+    
    
