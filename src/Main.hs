@@ -49,7 +49,7 @@ main = do
    
    let l = cityfit cityNum citymap
 
-   let cityOpts = EvOptions 200 (chrLength*cityNum) 2000 l 0 0.3 0.1  
+   let cityOpts = EvOptions 200 (chrLength*cityNum) 2000 l 0 0.5 0.1
    (n, result) <- initEvol cityOpts
   
    print $ show n ++ "-" ++ show result 
