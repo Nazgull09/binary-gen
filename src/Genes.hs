@@ -35,9 +35,9 @@ nextPopulation opts@(EvOptions {..}) pop = do
         newPop' <-liftM concat $ replicateM (nonElite `div` 2) $ do
             a1 <- takeChr
             b1 <- takeChr
-            (a2, b2) <- traceShow ("Crossover", a1, b1) $ crossingover a1 b1
-            a3 <- traceShow ("mutate", a2) $ applyMutation a2
-            b3 <- traceShow ("mutate", b2) $ applyMutation b2
+            (a2, b2) <- crossingover a1 b1
+            a3 <- applyMutation a2
+            b3 <- applyMutation b2
             return $ traceShow (a3, b3) $ [a3, b3]
         let newPop = elite ++ newPop'
         return $ if length newPop <= length pop then newPop else tail newPop
@@ -60,13 +60,11 @@ randPopulation::Int->Int->Int->GenRand Population
 randPopulation n m cityn = replicateM n $ randChromosome m cityn
 
 mutateChromosome::Chromosome->EvOptions->GenRand Chromosome
-mutateChromosome chr opts = traceShow ("Mutating ", chr) $ do                              --заменяем н-ый элемент инверсией
-        n <- uniform [0..length chr - 1] --ERROR
-        let arr = traceShow ("taking n ", n) $ filter (\i -> if n/=0 then (i/=chr!!n && i/=chr!!(n-1))  else i/=chr!!n ) [0..cityn opts-1]
-        newA <- traceShow ("taking from arr ", arr) $ uniform arr
-        liftIO $ print newA
-        let res = traceShow ("newA ", newA) $ take n chr ++ [newA] ++ drop (n+1) chr 
-        return $ traceShow ("res ", res) $ res
+mutateChromosome chr opts = do                              --заменяем н-ый элемент инверсией
+        n <- uniform [0..length chr - 1]
+        let arr = if n/=0 then take (n-1) chr ++ drop (n+1) chr else tail chr 
+        newA <- uniform arr
+        return $ take n chr ++ [newA] ++ drop (n+1) chr
         
 crossingover::Chromosome->Chromosome->GenRand (Chromosome, Chromosome)
 crossingover a b = do
